@@ -7,13 +7,19 @@ import joblib
 import plotly.express as px
 import plotly.io as pio
 import google.generativeai as genai
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///students.db'
+app.secret_key = os.getenv("SECRET_KEY", "default_secret_key") 
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///students.db")
+
 db = SQLAlchemy(app)
 
-genai.configure(api_key='AIzaSyDd24FzkOPyc5Bkk0w1-ZPlapfHgq79Bk8')  # Your API key
+genai.configure(api_key=os.getenv("GENAI_API_KEY"))
+#genai.configure(api_key='AIzaSyDd24FzkOPyc5Bkk0w1-ZPlapfHgq79Bk8')  # Your API key
 genai_model = genai.GenerativeModel('gemini-2.0-flash')
 
 # Load the model, scaler, encoders, and preprocessed data
