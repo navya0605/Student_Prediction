@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile</title>
+</head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f4f4f4; text-align: center;">
+
+    {% include 'navbar.html' %}
+
+    <div style="width: 50%; margin: 50px auto; background: white; padding: 20px; border-radius: 8px; 
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+        <h2 style="color: #333;">Profile</h2>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            {% if message != "Student login successful" %}  {# This will exclude the specific message #}
+                {% if category == 'success' %}
+                    <p style="padding: 10px; margin-bottom: 10px; border-radius: 5px; font-size: 14px; text-align: center;
+                              background-color: #d4edda; color: #155724; font-weight: bold;">
+                        {{ message }}
+                    </p>
+                {% elif category == 'error' %}
+                    <p style="padding: 10px; margin-bottom: 10px; border-radius: 5px; font-size: 14px; text-align: center;
+                              background-color: #f8d7da; color: #721c24; font-weight: bold;">
+                        {{ message }}
+                    </p>
+                {% elif category == 'warning' %}
+                    <p style="padding: 10px; margin-bottom: 10px; border-radius: 5px; font-size: 14px; text-align: center;
+                              background-color: #fff3cd; color: #856404; font-weight: bold;">
+                        {{ message }}
+                    </p>
+                {% elif category == 'info' %}
+                    <p style="padding: 10px; margin-bottom: 10px; border-radius: 5px; font-size: 14px; text-align: center;
+                              background-color: #d1ecf1; color: #0c5460; font-weight: bold;">
+                        {{ message }}
+                    </p>
+                {% else %}
+                    <p style="padding: 10px; margin-bottom: 10px; border-radius: 5px; font-size: 14px; text-align: center;
+                              background-color: #e2e3e5; color: #383d41; font-weight: bold;">
+                        {{ message }}
+                    </p>
+                {% endif %}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+        <div style="margin-top: 20px; padding: 20px; background: #fff; border-radius: 8px; 
+                    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); text-align: left;">
+            <form action="{{ url_for('profile') }}" method="post">
+                <label for="email" style="font-weight: bold; display: block; margin-top: 10px;">Email:</label>
+                <input type="email" name="email" value="{{ student.email }}" required
+                       style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+
+                <label for="phone" style="font-weight: bold; display: block; margin-top: 10px;">Phone:</label>
+                <input type="text" name="phone" value="{{ student.phone }}" required
+                       style="width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px;">
+
+                <button type="submit" style="margin-top: 20px; padding: 10px 15px; background-color: #007bff; 
+                        color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 16px;">
+                    Update Profile
+                </button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

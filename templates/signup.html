@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signup - EduVision</title>
+    <style>
+        /* Global Styling */
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, white, #e0f2fe);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+        }
+
+        /* Background Image */
+        body::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1588345921523-c2dcdb7f1dcd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80') no-repeat center center/cover;
+            opacity: 0.05;
+            z-index: -1;
+        }
+
+        /* Form Container */
+        .container {
+            background: white;
+            padding: 30px;
+            width: 350px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        /* Header */
+        .container h2 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+
+        /* Form Inputs */
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        /* Signup Button */
+        .btn {
+            width: 100%;
+            background-color: #0284c7;
+            color: white;
+            font-size: 16px;
+            padding: 10px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0369a1;
+        }
+
+        /* Login Link */
+        .login-link {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .login-link a {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+
+        /* Icon Container */
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 50px;
+            height: 50px;
+            background-color: #0284c7;
+            color: white;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+
+        .icon-container svg {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="icon-container">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 19c-1.544 0-2.939-.903-3.554-2.29A.5.5 0 0 1 8.914 16H15.086a.5.5 0 0 1 .468.71C14.939 18.097 13.544 19 12 19Z" />
+                <path d="M18 15.25V15a6 6 0 1 0-12 0v.25a.75.75 0 0 0 .75.75h10.5a.75.75 0 0 0 .75-.75Z" />
+            </svg>
+        </div>
+        <h2>EduVision</h2>
+        <p class="subtitle">Student Performance Prediction</p>
+
+        <form action="{{ url_for('signup') }}" method="post">
+            <label>Student ID:</label>
+            <input type="text" name="student_id" required>
+
+            <label>Email:</label>
+            <input type="email" name="email" required>
+
+            <label>Phone:</label>
+            <input type="text" name="phone" required>
+
+            <label>Password:</label>
+            <input type="password" name="password" required>
+
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" required>
+
+            <button type="submit" class="btn">Signup</button>
+        </form>
+
+        <p class="login-link">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+    </div>
+
+</body>
+</html>

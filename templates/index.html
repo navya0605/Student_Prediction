@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Prediction System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        label {
+            font-weight: bold;
+        }
+        input, select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            padding: 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .visualizations {
+            margin-top: 20px;
+        }
+        .visualizations img {
+            width: 100%;
+            max-width: 400px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    {% include 'navbar.html' %}
+
+    <h1>Student Performance Prediction System for Enhanced Online Learning</h1>
+    <div class="container">
+        <h2>Input Student Data</h2>
+        <form action="/predict" method="POST">
+            <label for="avg_score">Average Assessment Score (0-100):</label>
+            <input type="number" id="avg_score" name="avg_score" required>
+
+            <label for="total_clicks">Total VLE Clicks:</label>
+            <input type="number" id="total_clicks" name="total_clicks" required>
+
+            <label for="studied_credits">Studied Credits:</label>
+            <input type="number" id="studied_credits" name="studied_credits" required>
+
+            <label for="days_to_start">Days to Course Start (from Registration):</label>
+            <input type="number" id="days_to_start" name="days_to_start" required>
+
+            <label for="gender">Gender:</label>
+            <select id="gender" name="gender" required>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+
+            <label for="disability">Disability:</label>
+            <select id="disability" name="disability" required>
+                <option value="Y">Yes</option>
+                <option value="N">No</option>
+            </select>
+
+            <label for="highest_education">Highest Education:</label>
+            <select id="highest_education" name="highest_education" required>
+                <option value="No Formal quals">No Formal Qualifications</option>
+                <option value="Lower Than A Level">Lower Than A Level</option>
+                <option value="A Level or Equivalent">A Level or Equivalent</option>
+                <option value="HE Qualification">HE Qualification</option>
+                <option value="Post Graduate Qualification">Post Graduate Qualification</option>
+            </select>
+
+            <label for="age_band">Age Band:</label>
+            <select id="age_band" name="age_band" required>
+                <option value="0-35">0-35</option>
+                <option value="35-55">35-55</option>
+                <option value="55<=">55 and above</option>
+            </select>
+
+            <button type="submit">Predict Performance</button>
+        </form>
+    </div>
+</body>
+</html>

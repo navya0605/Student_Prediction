@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Notifications</title>
+    <style>
+        /* Base Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        
+        /* Navigation Bar */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #34495e;
+            padding: 30px;
+            color: white;
+            border-radius: 1px;
+        }
+        
+        .dashboard-title {
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #3498db;
+        }
+        
+        /* Main Container */
+        .container {
+            max-width: 1100px;
+            margin: 20px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        
+        /* Alerts */
+        .alert {
+            padding: 12px 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .alert.danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        /* Form Styles */
+        .notification-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #ecf0f1;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        
+        label {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        button {
+            background-color: #2980b9;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #1f6aa5;
+        }
+        
+        /* Section Headers */
+        h3 {
+            margin: 30px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #ecf0f1;
+        }
+        
+        /* Table Styles */
+        .styled-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .styled-table th, 
+        .styled-table td {
+            padding: 15px;
+            text-align: left;
+        }
+        
+        .styled-table th {
+            background-color: #34495e;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .styled-table tr {
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .styled-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .styled-table tr:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .styled-table a {
+            color: #2980b9;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .styled-table a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Prediction Styles */
+        .prediction {
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        
+        .prediction.withdrawn {
+            color: #2d3436;
+            background-color: #f1f2f6;
+        }
+        
+        .prediction.fail {
+            color: #e74c3c;
+            background-color: #fadbd8;
+        }
+        
+        .prediction.pass {
+            color: #3498db;
+            background-color: #d6eaf8;
+        }
+        
+        .prediction.distinction {
+            color: #27ae60;
+            background-color: #d5f5e3;
+        }
+        
+        /* Notification History */
+        .notification-history {
+            margin-top: 15px;
+        }
+        
+        .notification-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .notification-content {
+            flex: 2;
+            margin-right: 20px;
+        }
+        
+        .notification-content strong {
+            color: #2c3e50;
+        }
+        
+        .notification-meta {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 10px;
+        }
+        
+        .timestamp {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .status {
+            font-size: 14px;
+            padding: 3px 8px;
+            border-radius: 10px;
+        }
+        
+        .status.read {
+            background-color: #e9ecef;
+        }
+        
+        .status.unread {
+            background-color: #d6eaf8;
+            color: #3498db;
+        }
+        
+        .delete-btn {
+            background-color: #e74c3c;
+            padding: 8px 12px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+        
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: #fff;
+            padding: 30px;
+            width: 80%;
+            max-width: 800px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+            cursor: pointer;
+            background: none;
+            border: none;
+            transition: color 0.3s;
+        }
+        
+        .close:hover {
+            color: #e74c3c;
+        }
+        
+        iframe {
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 10px;
+        }
+        
+        #predictedPerformance {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            margin-left: 5px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <h1 class="dashboard-title">Admin Dashboard</h1>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('admin_dashboard') }}">📊 Admin Dashboard</a></li>
+            <li><a href="{{ url_for('update_notifications') }}">📢 Manage Notifications</a></li>
+            <li><a href="{{ url_for('logout') }}">🚪 Logout</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert {{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <!-- Notification Form -->
+        <form action="{{ url_for('update_notifications') }}" method="post" class="notification-form">
+            <div>
+                <label for="student_id">Student ID:</label>
+                <input type="text" name="student_id" value="{{ student_id if student_id else '' }}" required>
+            </div>
+            
+            <div>
+                <label for="notification">Notification (Edit the suggestion below if needed):</label>
+                <textarea name="notification">{{ suggestion if suggestion else '' }}</textarea>
+            </div>
+            
+            <div class="form-buttons">
+                <button type="submit" name="action" value="generate">Generate Suggestion</button>
+                <button type="submit" name="action" value="send">Send Notification</button>
+            </div>
+        </form>
+        
+        <!-- Students Table -->
+        <h3>Registered Students</h3>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Student ID</th>
+                    <th>Email</th>
+                    <th>Prediction</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in students %}
+                <tr>
+                    <td><a href="#" class="view-performance" data-id="{{ student.student_id }}">{{ student.student_id }}</a></td>
+                    <td>{{ student.email }}</td>
+                    <td>
+                        <span class="prediction {{ predictions[student.student_id]|lower if predictions[student.student_id] not in ['Error', 'No data'] else '' }}">
+                            {{ predictions[student.student_id] if predictions[student.student_id] not in ['Error', 'No data'] else predictions[student.student_id] }}
+                        </span>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+        <!-- Notification History -->
+        <h3>Notification History</h3>
+        <div class="notification-history">
+            {% if notifications %}
+                {% for notif in notifications %}
+                <div class="notification-item">
+                    <div class="notification-content">
+                        <p>To <strong>{{ notif.student_id }}</strong>: {{ notif.message }}</p>
+                    </div>
+                    <div class="notification-meta">
+                        <span class="timestamp">{{ notif.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        <span class="status {{ 'read' if notif.is_read else 'unread' }}">
+                            {{ 'Read' if notif.is_read else 'Unread' }}
+                        </span>
+                        <form action="{{ url_for('delete_notification', notification_id=notif.id|int) }}" method="post">
+                            <button type="submit" class="delete-btn">🗑 Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <p>No notifications sent yet.</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Performance Modal -->
+    <div id="performanceModal" class="modal">
+        <div class="modal-content">
+            <span class="close">×</span>
+            <h3>Student Performance</h3>
+            <p><b>Predicted Performance:</b> <span id="predictedPerformance"></span></p>
+            <h4>Performance Chart</h4>
+            <iframe id="performanceChart" src="" width="100%" height="300px"></iframe>
+            <h4>Comparison Chart</h4>
+            <iframe id="comparisonChart" src="" width="100%" height="300px"></iframe>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const modal = document.getElementById("performanceModal");
+            const closeBtn = document.querySelector(".close");
+            const performanceChart = document.getElementById("performanceChart");
+            const comparisonChart = document.getElementById("comparisonChart");
+            const predictedPerformance = document.getElementById("predictedPerformance");
+
+            document.querySelectorAll(".view-performance").forEach(link => {
+                link.addEventListener("click", function(event) {
+                    event.preventDefault();
+                    let studentId = this.getAttribute("data-id");
+
+                    fetch(`/admin/student_performance/${studentId}`)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! Status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.error) {
+                                alert(`Error: ${data.error}`);
+                                return;
+                            }
+                            predictedPerformance.innerText = data.prediction;
+                            performanceChart.src = data.student_chart;
+                            comparisonChart.src = data.comparison_chart;
+
+                            switch (data.prediction) {
+                                case 'Withdrawn':
+                                    predictedPerformance.style.color = 'black';
+                                    predictedPerformance.style.backgroundColor = '#f1f2f6';
+                                    break;
+                                case 'Fail':
+                                    predictedPerformance.style.color = '#e74c3c';
+                                    predictedPerformance.style.backgroundColor = '#fadbd8';
+                                    break;
+                                case 'Pass':
+                                    predictedPerformance.style.color = '#3498db';
+                                    predictedPerformance.style.backgroundColor = '#d6eaf8';
+                                    break;
+                                case 'Distinction':
+                                    predictedPerformance.style.color = '#27ae60';
+                                    predictedPerformance.style.backgroundColor = '#d5f5e3';
+                                    break;
+                                default:
+                                    predictedPerformance.style.color = 'black';
+                                    predictedPerformance.style.backgroundColor = '#f1f2f6';
+                            }
+
+                            modal.style.display = "flex";
+                        })
+                        .catch(error => {
+                            console.error("Error fetching data:", error);
+                            alert("Failed to load student performance data. Please try again.");
+                        });
+                });
+            });
+
+            closeBtn.addEventListener("click", function() {
+                modal.style.display = "none";
+            });
+
+            window.addEventListener("click", function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* Navbar Styling */
+        .navbar {
+            background-color: #2c3e50;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h2 {
+            color: #fff;
+            margin: 0;
+        }
+
+        .navbar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .navbar ul li {
+            position: relative;
+        }
+
+        .navbar ul li a {
+            text-decoration: none;
+            color: #fff;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.3s;
+        }
+
+        .navbar ul li a:hover {
+            color: #1abc9c;
+        }
+
+        /* Notification Green Dot */
+        .notification-icon {
+            position: relative;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+        }
+
+        /* Show the dot if the class "show" is added */
+        .notification-dot.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<!-- Navigation Bar -->
+<nav class="navbar">
+    <!-- Left: Welcome Message -->
+    <h2>Welcome, {{ session.get('student_id', 'Guest') }}</h2>
+
+    <!-- Right: Navigation Links -->
+    <ul>
+        <li>
+            <a href="{{ url_for('dashboard') }}">
+                <i class="fa-solid fa-gauge"></i> Dashboard
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('profile') }}">
+                <i class="fa-solid fa-user"></i> Profile
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('predict') }}">
+                <i class="fa-solid fa-chart-line"></i> Predict Performance
+            </a>
+        </li>
+        <li class="notification-icon">
+            <a href="{{ url_for('notifications') }}">
+                <i class="fa-solid fa-bell"></i> Notifications
+                <span class="notification-dot {% if has_unread_notifications %}show{% endif %}"></span>
+            </a>
+        </li>
+        <li>
+            <a href="{{ url_for('logout') }}">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
+        </li>
+    </ul>
+</nav>
