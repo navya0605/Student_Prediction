@@ -9,7 +9,6 @@
 
     {% include 'navbar.html' %}
 
-    <!-- Dashboard Container -->
     <div style="max-width: 1000px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
 
         {% set color = "black" if prediction == "Withdrawn" else "red" if prediction == "Fail" else "blue" if prediction == "Pass" else "green" %}
@@ -25,13 +24,11 @@
     </div>
 </div>
 
-<!-- Inject Color Using JavaScript -->
 <script>
     document.getElementById("prediction-text").style.color = "{{ color }}";
 </script>
 
 
-        <!-- Performance Chart Section -->
         <h3 style="color: #2c3e50;"><i class="fa-solid fa-chart-line"></i> Prediction Chart</h3>
         <iframe src="{{ student_chart }}" style="display: block; width: 100%; height: 500px; border: none; border-radius: 8px; margin-top: 10px;"></iframe>
         <h3>📊 Student vs Other Students</h3>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Notifications</title>
     <style>
-        /* Base Styles */
         body {
             font-family: 'Arial', sans-serif;
             background-color: #f4f6f9;
@@ -14,7 +13,6 @@
             color: #333;
         }
         
-        /* Navigation Bar */
         .navbar {
             display: flex;
             justify-content: space-between;
@@ -49,7 +47,6 @@
             color: #3498db;
         }
         
-        /* Main Container */
         .container {
             max-width: 1100px;
             margin: 20px auto;
@@ -59,7 +56,6 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
         
-        /* Alerts */
         .alert {
             padding: 12px 15px;
             margin-bottom: 20px;
@@ -78,7 +74,6 @@
             border: 1px solid #f5c6cb;
         }
         
-        /* Form Styles */
         .notification-form {
             display: flex;
             flex-direction: column;
@@ -129,14 +124,12 @@
             background-color: #1f6aa5;
         }
         
-        /* Section Headers */
         h3 {
             margin: 30px 0 15px;
             padding-bottom: 8px;
             border-bottom: 2px solid #ecf0f1;
         }
         
-        /* Table Styles */
         .styled-table {
             width: 100%;
             border-collapse: collapse;
@@ -178,7 +171,6 @@
             text-decoration: underline;
         }
         
-        /* Prediction Styles */
         .prediction {
             font-weight: bold;
             padding: 5px 10px;
@@ -206,7 +198,6 @@
             background-color: #d5f5e3;
         }
         
-        /* Notification History */
         .notification-history {
             margin-top: 15px;
         }
@@ -270,7 +261,6 @@
             background-color: #c0392b;
         }
         
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -329,7 +319,6 @@
     </style>
 </head>
 <body>
-    <!-- Navigation Bar -->
     <nav class="navbar">
         <h1 class="dashboard-title">Admin Dashboard</h1>
         <ul class="nav-links">
@@ -366,7 +355,6 @@
             </div>
         </form>
         
-        <!-- Students Table -->
         <h3>Registered Students</h3>
         <table class="styled-table">
             <thead>
@@ -391,7 +379,6 @@
             </tbody>
         </table>
         
-        <!-- Notification History -->
         <h3>Notification History</h3>
         <div class="notification-history">
             {% if notifications %}
@@ -401,7 +388,7 @@
                         <p>To <strong>{{ notif.student_id }}</strong>: {{ notif.message }}</p>
                     </div>
                     <div class="notification-meta">
-                        <span class="timestamp">{{ notif.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                        <span class="timestamp">{{ notif.created_at_ist }}</span>
                         <span class="status {{ 'read' if notif.is_read else 'unread' }}">
                             {{ 'Read' if notif.is_read else 'Unread' }}
                         </span>
@@ -417,7 +404,6 @@
         </div>
     </div>
     
-    <!-- Performance Modal -->
     <div id="performanceModal" class="modal">
         <div class="modal-content">
             <span class="close">×</span>

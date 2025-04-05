@@ -51,7 +51,7 @@
             {% for notif in notifications %}
                 <div class="notification-item {% if not notif.is_read %}unread{% endif %}">
                     <p>{{ notif.message }}</p>
-                    <small>{{ notif.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</small>
+                    <small>{{ notif.created_at_ist }}</small>
                 </div>
             {% endfor %}
         </div>

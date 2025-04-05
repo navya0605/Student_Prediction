@@ -7,6 +7,8 @@ import joblib
 import plotly.express as px
 import plotly.io as pio
 import google.generativeai as genai
+from datetime import datetime
+import pytz
 import os
 from dotenv import load_dotenv
 
@@ -19,10 +21,9 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL", "sqlite:///stu
 db = SQLAlchemy(app)
 
 genai.configure(api_key=os.getenv("GENAI_API_KEY"))
-#genai.configure(api_key='AIzaSyDd24FzkOPyc5Bkk0w1-ZPlapfHgq79Bk8')  # Your API key
+#genai.configure(api_key='AIzaSyDd24FzkOPyc5Bkk0w1-ZPlapfHgq79Bk8')
 genai_model = genai.GenerativeModel('gemini-2.0-flash')
 
-# Load the model, scaler, encoders, and preprocessed data
 model = joblib.load('models/oulad_model.pkl')
 scaler = joblib.load('models/scaler.pkl')
 encoders = joblib.load('models/encoders.pkl')
@@ -129,8 +130,7 @@ def admin_dashboard():
     if 'admin' not in session:
         flash('Please log in as an admin first.', 'danger')
         return redirect(url_for('login'))
-    # 🎯 Generate Overall Performance Pie Chart with Labels & Bright Colors
-    label_mapping = {0: "Withdrawn", 1: "Fail", 2: "Pass", 3: "Distinction"}  # Proper labels
+    label_mapping = {0: "Withdrawn", 1: "Fail", 2: "Pass", 3: "Distinction"} 
     preprocessed_data['final_result_label'] = preprocessed_data['final_result'].map(label_mapping)
 
     all_students_results = preprocessed_data['final_result_label'].value_counts()
@@ -139,13 +139,12 @@ def admin_dashboard():
         values=all_students_results, 
         names=all_students_results.index, 
         title="Overall Student Performance",
-        color_discrete_sequence=["#FF5733", "#33FF57", "#3357FF", "#FFD700"],  # Bright Colors
+        color_discrete_sequence=["#FF5733", "#33FF57", "#3357FF", "#FFD700"], 
         labels={"index": "Performance", "value": "Count"}
     )
 
-    fig_pie.update_traces(textinfo="label+percent",insidetextorientation="horizontal")  # Show both labels and percentages
+    fig_pie.update_traces(textinfo="label+percent",insidetextorientation="horizontal") 
 
-    # Save the chart
     pio.write_html(fig_pie, file="static/overall_performance.html", auto_open=False)
 
     return render_template('admin_dashboard.html',overall_chart='static/overall_performance.html')
@@ -160,7 +159,6 @@ def dashboard():
     student = Student.query.filter_by(student_id=student_id).first()
     notifications = Notification.query.filter_by(student_id=student_id).order_by(Notification.created_at.desc()).all()
     has_unread_notifications = any(not notif.is_read for notif in notifications)
-    # Fetch preprocessed data for the student
     student_data = preprocessed_data[preprocessed_data['id_student'] == int(student_id)]
     if student_data.empty:
         flash("No preprocessed data found for this student.", 'danger')
@@ -168,29 +166,27 @@ def dashboard():
     
     student_data = student_data.iloc[0]
     
-    # Prepare features for prediction (already preprocessed)
     features = ['avg_score', 'total_clicks', 'studied_credits', 'days_to_start', 'gender', 'disability', 'highest_education', 'age_band']
     new_data = pd.DataFrame([student_data[features].values], columns=features)
 
-    # Predict
     prediction = model.predict(new_data)
     prediction_label = encoders['final_result'].inverse_transform(prediction.reshape(-1, 1))[0].item()
     recommendation = {
-        'Distinction': "This student is predicted to achieve a Distinction! Encourage them to continue their outstanding work.",
-        'Pass': "This student is predicted to Pass. Continue monitoring their progress and provide encouragement.",
-        'Fail': "This student is at risk of failing. Consider additional support and encourage more engagement.",
-        'Withdrawn': "This student is at risk of withdrawing. Immediate intervention is recommended."
+        'Distinction': "Congratulations! You are on track to achieve a Distinction. Keep up your excellent work and stay consistent!",
+        'Pass': "Good job! You are predicted to pass. Stay focused, keep practicing, and you can aim even higher.",
+        'Fail': "You're currently at risk of failing. Don't be discouraged — seek help where needed, stay engaged, and keep working hard. You can improve!",
+        'Withdrawn': "It looks like you're at risk of withdrawing. Remember, support is available — reach out for help and stay connected. You can still turn things around!"
     }.get(prediction_label, "No recommendation available.")
 
-    # Generate chart (optional)
+
     fig = px.bar(x=[prediction_label], title='Predicted Final Result')
     pio.write_html(fig, file='static/student_result.html', auto_open=False)
 
-    # 🎯 Student vs Other Students Chart (Comparison)
+
     comparison_data = preprocessed_data.copy()
     comparison_data['Student Type'] = comparison_data['id_student'].apply(lambda x: 'Selected Student' if x == int(student_id) else 'Other Students')
 
-    # Generate the comparison bar chart
+
     fig_comparison = px.box(
         comparison_data, 
         x='Student Type', 
@@ -240,8 +236,13 @@ def update_notifications():
     students = Student.query.all()
     predictions = {}
     notifications = Notification.query.order_by(Notification.created_at.desc()).all()
-    
-    # Precompute predictions for all students
+    ist = pytz.timezone('Asia/Kolkata')
+    utc = pytz.utc
+    for notif in notifications:
+        utc_time = notif.created_at.replace(tzinfo=utc)
+        ist_time = utc_time.astimezone(ist)
+        notif.created_at_ist = ist_time.strftime('%Y-%m-%d %I:%M:%S %p IST')
+
     for student in students:
         student_id = student.student_id
         student_data = preprocessed_data[preprocessed_data['id_student'] == int(student_id)]
@@ -321,18 +322,24 @@ def notifications():
         return redirect(url_for('login'))
 
     student_id = session['student_id']
-
-    # Fetch all notifications
     student_notifications = Notification.query.filter_by(student_id=student_id).order_by(Notification.created_at.desc()).all()
 
-    # Mark all notifications as read
+    ist = pytz.timezone('Asia/Kolkata')
+    utc = pytz.utc
+    for notif in student_notifications:
+        utc_time = notif.created_at.replace(tzinfo=utc) 
+        ist_time = utc_time.astimezone(ist)
+        notif.created_at_ist = ist_time.strftime('%Y-%m-%d %I:%M:%S %p IST') 
+
     for notif in student_notifications:
         notif.is_read = True
     db.session.commit()
 
     has_unread_notifications = Notification.query.filter_by(student_id=student_id, is_read=False).count() > 0
 
-    return render_template('notifications.html', notifications=student_notifications, has_unread_notifications=has_unread_notifications)
+    return render_template('notifications.html', 
+                           notifications=student_notifications, 
+                           has_unread_notifications=has_unread_notifications)
 
 
 
@@ -368,7 +375,6 @@ def student_performance(student_id):
         return jsonify({"error": "Unauthorized"}), 403
 
     try:
-        # Fetch preprocessed data for the student
         print(f"Fetching data for student_id: {student_id}")
         student_data = preprocessed_data[preprocessed_data['id_student'] == int(student_id)]
         if student_data.empty:
@@ -378,25 +384,21 @@ def student_performance(student_id):
         print(f"Student data: {student_data}")
         student_data = student_data.iloc[0]
         
-        # Prepare features for prediction
         features = ['avg_score', 'total_clicks', 'studied_credits', 'days_to_start', 'gender', 'disability', 'highest_education', 'age_band']
         print(f"Preparing features: {features}")
         new_data = pd.DataFrame([student_data[features].values], columns=features)
         print(f"Input data for prediction: {new_data}")
 
-        # Predict
         prediction = model.predict(new_data)
         print(f"Raw prediction: {prediction}")
         prediction_label = encoders['final_result'].inverse_transform(prediction.reshape(-1, 1))[0].item()
         print(f"Prediction label: {prediction_label}")
 
-        # Generate performance chart
         fig = px.bar(x=[prediction_label], title=f'Predicted Final Result for Student {student_id}')
         performance_chart_path = 'static/admin_student_result.html'
         pio.write_html(fig, file=performance_chart_path, auto_open=False)
         print(f"Performance chart saved to: {performance_chart_path}")
 
-        # Generate comparison chart (student vs. other students)
         comparison_data = preprocessed_data.copy()
         comparison_data['Student Type'] = comparison_data['id_student'].apply(lambda x: 'Selected Student' if x == int(student_id) else 'Other Students')
         fig_comparison = px.box(
@@ -409,7 +411,6 @@ def student_performance(student_id):
         pio.write_html(fig_comparison, file=comparison_chart_path, auto_open=False)
         print(f"Comparison chart saved to: {comparison_chart_path}")
 
-        # Return JSON response
         return jsonify({
             "prediction": prediction_label,
             "student_chart": url_for('static', filename='admin_student_result.html'),
@@ -428,7 +429,6 @@ def predict():
         return redirect(url_for('login'))
     
     if request.method == 'POST':
-        # Get form data
         avg_score = float(request.form['avg_score'])
         total_clicks = float(request.form['total_clicks'])
         studied_credits = float(request.form['studied_credits'])
@@ -438,9 +438,8 @@ def predict():
         highest_education = request.form['highest_education']
         age_band = request.form['age_band']
       
-        total_clicks = total_clicks * 0.0000005  # Reduce importance by scaling down 
+        total_clicks = total_clicks * 0.0000005  
         
-        # Create DataFrame for new data
         new_data = pd.DataFrame({
             'avg_score': [avg_score],
             'total_clicks': [total_clicks],
@@ -452,7 +451,6 @@ def predict():
             'age_band': [age_band]
         })
 
-        # Preprocess new data
         new_data['gender'] = encoders['gender'].transform(new_data[['gender']])
         new_data['disability'] = encoders['disability'].transform(new_data[['disability']])
         new_data['highest_education'] = encoders['highest_education'].transform(new_data[['highest_education']])
@@ -461,7 +459,6 @@ def predict():
             new_data[['avg_score', 'total_clicks', 'studied_credits', 'days_to_start']]
         )
 
-        # Predict
         prediction = model.predict(new_data)
         prediction_label = encoders['final_result'].inverse_transform(prediction.reshape(-1, 1))[0].item()
         recommendation = {
