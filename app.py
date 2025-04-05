@@ -298,7 +298,7 @@ def update_notifications():
             give in 5 points no star marks and no long explanations sharp to the point to enhance online learning based on their performance. 
             """
             try:
-                response = genai_model.generate_content(prompt)  # Assuming genai_model is defined elsewhere
+                response = genai_model.generate_content(prompt)  
                 suggestion = response.text
             except Exception as e:
                 flash(f"Failed to generate suggestion: {str(e)}", 'danger')
