@@ -7,6 +7,7 @@ from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.preprocessing import OrdinalEncoder, StandardScaler
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from xgboost import XGBClassifier
 import joblib
 
 # Step 1: Data Collection
@@ -203,7 +204,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 
 # Step 6: Model Selection
 print("\nStep 6: Model Selection")
-model = RandomForestClassifier(random_state=42)
+model = XGBClassifier(eval_metric='mlogloss')
 
 # Step 7: Model Performance Evaluation
 print("\nStep 7: Model Performance Evaluation")
@@ -219,7 +220,7 @@ print("\nStep 8: Parameter Hyper-tuning")
 param_grid = {
     'n_estimators': [100, 200],
     'max_depth': [10, 20, None],
-    'min_samples_split': [2, 5]
+    'gamma' : [0, 0.1 ,0.3]
 }
 grid_search = GridSearchCV(model, param_grid, cv=5, scoring='accuracy', n_jobs=-1)
 grid_search.fit(X_train, y_train)
